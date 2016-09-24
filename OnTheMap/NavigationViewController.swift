@@ -16,7 +16,7 @@ class NavigationViewController: UINavigationController {
         let pinIconImage = UIImage(named: "pin")
 
                 let leftItem = UINavigationItem()
-        leftItem.leftBarButtonItem = UIBarButtonItem(image: pinIconImage, style: UIBarButtonItemStyle.Done, target: self, action: nil)
+        leftItem.leftBarButtonItem = UIBarButtonItem(image: pinIconImage, style: UIBarButtonItemStyle.Done, target: self, action: #selector(NavigationViewController.showSendInfoViewController))
         leftItem.title = "On The Map"
         leftItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem:
             .Redo, target: self, action: #selector(NavigationViewController.sayHi))
@@ -25,5 +25,10 @@ class NavigationViewController: UINavigationController {
     
     func sayHi () {
         print("Hi")
+    }
+    
+    func showSendInfoViewController(){
+        let sendInfoVC = self.storyboard?.instantiateViewControllerWithIdentifier("SendInfoVC") as? SendInformationViewController
+        self.presentViewController(sendInfoVC!, animated: true, completion: nil)
     }
 }

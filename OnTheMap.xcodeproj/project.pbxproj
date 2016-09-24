@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		DD0B08631D9666BF008B6E50 /* NavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0B08621D9666BF008B6E50 /* NavigationViewController.swift */; };
 		DD0B08651D966E81008B6E50 /* LocationsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0B08641D966E81008B6E50 /* LocationsTableViewController.swift */; };
+		DD0B08671D9682C5008B6E50 /* SendInformationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0B08661D9682C5008B6E50 /* SendInformationViewController.swift */; };
 		DD896AF21D92B25B009C482D /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD896AF11D92B25B009C482D /* MapViewController.swift */; };
 		DD896AF41D92B4DE009C482D /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD896AF31D92B4DE009C482D /* MapKit.framework */; };
 		DD896AF71D92BC44009C482D /* ParseClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD896AF61D92BC44009C482D /* ParseClient.swift */; };
@@ -27,6 +28,7 @@
 /* Begin PBXFileReference section */
 		DD0B08621D9666BF008B6E50 /* NavigationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationViewController.swift; sourceTree = "<group>"; };
 		DD0B08641D966E81008B6E50 /* LocationsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationsTableViewController.swift; sourceTree = "<group>"; };
+		DD0B08661D9682C5008B6E50 /* SendInformationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendInformationViewController.swift; sourceTree = "<group>"; };
 		DD896AF11D92B25B009C482D /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		DD896AF31D92B4DE009C482D /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		DD896AF61D92BC44009C482D /* ParseClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseClient.swift; sourceTree = "<group>"; };
@@ -104,6 +106,7 @@
 				DD896AF11D92B25B009C482D /* MapViewController.swift */,
 				DD0B08621D9666BF008B6E50 /* NavigationViewController.swift */,
 				DD0B08641D966E81008B6E50 /* LocationsTableViewController.swift */,
+				DD0B08661D9682C5008B6E50 /* SendInformationViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -216,6 +219,7 @@
 				DD896AF21D92B25B009C482D /* MapViewController.swift in Sources */,
 				DD896AF71D92BC44009C482D /* ParseClient.swift in Sources */,
 				DDFF237E1D9161FC0082D02D /* LoginViewController.swift in Sources */,
+				DD0B08671D9682C5008B6E50 /* SendInformationViewController.swift in Sources */,
 				DDFF23951D9175200082D02D /* UdacityConstants.swift in Sources */,
 				DDFF23921D91740A0082D02D /* UdacityClient.swift in Sources */,
 				DD896AFB1D92C432009C482D /* StudentInformation.swift in Sources */,
