@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		DD0B08631D9666BF008B6E50 /* NavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0B08621D9666BF008B6E50 /* NavigationViewController.swift */; };
+		DD0B08651D966E81008B6E50 /* LocationsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0B08641D966E81008B6E50 /* LocationsTableViewController.swift */; };
 		DD896AF21D92B25B009C482D /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD896AF11D92B25B009C482D /* MapViewController.swift */; };
 		DD896AF41D92B4DE009C482D /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD896AF31D92B4DE009C482D /* MapKit.framework */; };
 		DD896AF71D92BC44009C482D /* ParseClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD896AF61D92BC44009C482D /* ParseClient.swift */; };
@@ -25,6 +26,7 @@
 
 /* Begin PBXFileReference section */
 		DD0B08621D9666BF008B6E50 /* NavigationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationViewController.swift; sourceTree = "<group>"; };
+		DD0B08641D966E81008B6E50 /* LocationsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationsTableViewController.swift; sourceTree = "<group>"; };
 		DD896AF11D92B25B009C482D /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		DD896AF31D92B4DE009C482D /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		DD896AF61D92BC44009C482D /* ParseClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseClient.swift; sourceTree = "<group>"; };
@@ -101,6 +103,7 @@
 				DDFF237D1D9161FC0082D02D /* LoginViewController.swift */,
 				DD896AF11D92B25B009C482D /* MapViewController.swift */,
 				DD0B08621D9666BF008B6E50 /* NavigationViewController.swift */,
+				DD0B08641D966E81008B6E50 /* LocationsTableViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -208,6 +211,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DD0B08651D966E81008B6E50 /* LocationsTableViewController.swift in Sources */,
 				DDFF23971D917C6D0082D02D /* GCD.swift in Sources */,
 				DD896AF21D92B25B009C482D /* MapViewController.swift in Sources */,
 				DD896AF71D92BC44009C482D /* ParseClient.swift in Sources */,
