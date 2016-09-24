@@ -149,14 +149,15 @@
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </tabBar>
                     <connections>
-                        <segue destination="mSp-Mj-6Xo" kind="relationship" relationship="viewControllers" id="73L-zr-Nz4"/>
+                        <segue destination="zyd-ec-UWE" kind="relationship" relationship="viewControllers" id="73L-zr-Nz4"/>
+                        <segue destination="CQC-kK-PLu" kind="relationship" relationship="viewControllers" id="JgX-bm-hMw"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="s9V-1V-nAS" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1080" y="352"/>
         </scene>
-        <!--Item-->
+        <!--Map View Controller-->
         <scene sceneID="iji-vg-9Qk">
             <objects>
                 <viewController id="mSp-Mj-6Xo" customClass="MapViewController" customModule="OnTheMap" customModuleProvider="target" sceneMemberID="viewController">
@@ -168,8 +169,11 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="Bbk-Ob-qmm">
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="Bbk-Ob-qmm">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <connections>
+                                    <outlet property="delegate" destination="mSp-Mj-6Xo" id="P6c-Xv-NqY"/>
+                                </connections>
                             </mapView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -180,17 +184,86 @@
                             <constraint firstItem="Bbk-Ob-qmm" firstAttribute="top" secondItem="LT5-cT-PNi" secondAttribute="bottom" constant="-20" id="rPi-lt-fw9"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Item" id="gMZ-c4-aJG"/>
+                    <navigationItem key="navigationItem" id="weR-P1-2KC"/>
                     <connections>
                         <outlet property="mapView" destination="Bbk-Ob-qmm" id="KZe-B5-vqa"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="t3E-fm-y2f" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1758" y="342"/>
+            <point key="canvasLocation" x="2664" y="54"/>
+        </scene>
+        <!--Table View Controller-->
+        <scene sceneID="Sug-EY-00Q">
+            <objects>
+                <tableViewController id="65s-cJ-sBf" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="wQe-SR-rbr">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="bQ5-XW-NNj">
+                                <rect key="frame" x="0.0" y="92" width="600" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="bQ5-XW-NNj" id="c9y-yB-g7p">
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="65s-cJ-sBf" id="os8-iz-a9g"/>
+                            <outlet property="delegate" destination="65s-cJ-sBf" id="Wjk-dW-OHh"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" id="699-1I-Hr3"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="cjz-d8-XHm" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2664" y="891"/>
+        </scene>
+        <!--Map-->
+        <scene sceneID="cVq-cb-8KF">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="zyd-ec-UWE" customClass="NavigationViewController" customModule="OnTheMap" customModuleProvider="target" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Map" image="map" id="gMZ-c4-aJG"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="K9m-U3-dEw">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="mSp-Mj-6Xo" kind="relationship" relationship="rootViewController" id="hcS-P7-29J"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="nqm-0E-Dlq" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1852" y="54"/>
+        </scene>
+        <!--List-->
+        <scene sceneID="YiZ-M5-ADK">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="CQC-kK-PLu" customClass="NavigationViewController" customModule="OnTheMap" customModuleProvider="target" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="List" image="list" id="nMN-9U-GmI"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="1Oz-76-a2A">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="65s-cJ-sBf" kind="relationship" relationship="rootViewController" id="V45-MV-ML4"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="T4v-fk-Vna" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1852" y="891"/>
         </scene>
     </scenes>
     <resources>
+        <image name="list" width="32" height="32"/>
+        <image name="map" width="32" height="32"/>
         <image name="udacity" width="256" height="256"/>
     </resources>
 </document>
