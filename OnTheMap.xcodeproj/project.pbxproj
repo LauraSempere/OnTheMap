@@ -10,6 +10,7 @@
 		DD0B08631D9666BF008B6E50 /* NavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0B08621D9666BF008B6E50 /* NavigationViewController.swift */; };
 		DD0B08651D966E81008B6E50 /* LocationsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0B08641D966E81008B6E50 /* LocationsTableViewController.swift */; };
 		DD0B08671D9682C5008B6E50 /* SendInformationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0B08661D9682C5008B6E50 /* SendInformationViewController.swift */; };
+		DD0B086A1D96A376008B6E50 /* Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0B08691D96A376008B6E50 /* Alert.swift */; };
 		DD896AF21D92B25B009C482D /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD896AF11D92B25B009C482D /* MapViewController.swift */; };
 		DD896AF41D92B4DE009C482D /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD896AF31D92B4DE009C482D /* MapKit.framework */; };
 		DD896AF71D92BC44009C482D /* ParseClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD896AF61D92BC44009C482D /* ParseClient.swift */; };
@@ -29,6 +30,7 @@
 		DD0B08621D9666BF008B6E50 /* NavigationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationViewController.swift; sourceTree = "<group>"; };
 		DD0B08641D966E81008B6E50 /* LocationsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationsTableViewController.swift; sourceTree = "<group>"; };
 		DD0B08661D9682C5008B6E50 /* SendInformationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendInformationViewController.swift; sourceTree = "<group>"; };
+		DD0B08691D96A376008B6E50 /* Alert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Alert.swift; sourceTree = "<group>"; };
 		DD896AF11D92B25B009C482D /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		DD896AF31D92B4DE009C482D /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		DD896AF61D92BC44009C482D /* ParseClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseClient.swift; sourceTree = "<group>"; };
@@ -58,6 +60,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		DD0B08681D96A358008B6E50 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				DD0B08691D96A376008B6E50 /* Alert.swift */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
 		DD896AF51D92BC33009C482D /* Parse */ = {
 			isa = PBXGroup;
 			children = (
@@ -88,8 +98,9 @@
 			isa = PBXGroup;
 			children = (
 				DDFF238F1D9173B00082D02D /* Model */,
+				DD0B08681D96A358008B6E50 /* View */,
+				DDFF238E1D9164270082D02D /* Controller */,
 				DDFF237B1D9161FC0082D02D /* AppDelegate.swift */,
-				DDFF238E1D9164270082D02D /* Controllers */,
 				DDFF237F1D9161FC0082D02D /* Main.storyboard */,
 				DDFF23821D9161FC0082D02D /* Assets.xcassets */,
 				DDFF23841D9161FC0082D02D /* LaunchScreen.storyboard */,
@@ -99,7 +110,7 @@
 			path = OnTheMap;
 			sourceTree = "<group>";
 		};
-		DDFF238E1D9164270082D02D /* Controllers */ = {
+		DDFF238E1D9164270082D02D /* Controller */ = {
 			isa = PBXGroup;
 			children = (
 				DDFF237D1D9161FC0082D02D /* LoginViewController.swift */,
@@ -108,7 +119,7 @@
 				DD0B08641D966E81008B6E50 /* LocationsTableViewController.swift */,
 				DD0B08661D9682C5008B6E50 /* SendInformationViewController.swift */,
 			);
-			name = Controllers;
+			name = Controller;
 			sourceTree = "<group>";
 		};
 		DDFF238F1D9173B00082D02D /* Model */ = {
@@ -219,6 +230,7 @@
 				DD896AF21D92B25B009C482D /* MapViewController.swift in Sources */,
 				DD896AF71D92BC44009C482D /* ParseClient.swift in Sources */,
 				DDFF237E1D9161FC0082D02D /* LoginViewController.swift in Sources */,
+				DD0B086A1D96A376008B6E50 /* Alert.swift in Sources */,
 				DD0B08671D9682C5008B6E50 /* SendInformationViewController.swift in Sources */,
 				DDFF23951D9175200082D02D /* UdacityConstants.swift in Sources */,
 				DDFF23921D91740A0082D02D /* UdacityClient.swift in Sources */,

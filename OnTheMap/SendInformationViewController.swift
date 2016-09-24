@@ -24,6 +24,8 @@ class SendInformationViewController: UIViewController, MKMapViewDelegate {
     @IBOutlet weak var activityIndicatorView: UIView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
+    let alert = Alert()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         activityIndicatorView.hidden = true
@@ -61,6 +63,7 @@ class SendInformationViewController: UIViewController, MKMapViewDelegate {
             if let err = error {
                 print("Error::::: \(err)")
                 self.toggleActivityIndicator(false)
+                self.alert.show(self, title:"Error Getting your Location", message: "Check that you provided a valid location", actionText: "Dismiss", additionalAction: nil)
             } else {
                 if let location = placemark!.last?.location {
                     let center = CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
