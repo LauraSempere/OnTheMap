@@ -25,6 +25,10 @@ class SendInformationViewController: UIViewController, MKMapViewDelegate, UIText
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     let alert = Alert()
+    let parseClient = ParseClient.sharedInstance()
+    // let udacityClient = UdacityClient.sharedInstance()
+    var currentStudent = UdacityClient.sharedInstance().currentStudent
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -71,12 +75,18 @@ class SendInformationViewController: UIViewController, MKMapViewDelegate, UIText
                     self.mapView.setRegion(region, animated: true)
                     let annotation = MKPointAnnotation()
                     annotation.coordinate = center
-                    annotation.title = location.description
+                    annotation.title = self.locationTextField.text!
                     self.mapView.addAnnotation(annotation)
                     
                     self.submitMediaURLView.hidden = false
                     self.submitLocationView.hidden = true
                     self.toggleActivityIndicator(false)
+                    
+                    self.currentStudent.latitude = location.coordinate.latitude as! Double
+                    self.currentStudent.longitude = location.coordinate.longitude as! Double
+                    self.currentStudent.mapString = self.locationTextField.text!
+                    
+                    print("Current Student:: \(self.currentStudent)")
                 
                 } else {
                     print("No location found")
@@ -97,7 +107,21 @@ class SendInformationViewController: UIViewController, MKMapViewDelegate, UIText
     }
     
     @IBAction func submitLocationInformation(sender: AnyObject) {
-        
+        if let mediaURL = mediaURLTextField.text {
+            let userInfo:[String: AnyObject] = ["uniqueKey": currentStudent.uniqueKey, "firstName": "Laura", "lastName": "Sempere", "mapString" : currentStudent.mapString, "mediaURL": mediaURL, "latitude":currentStudent.latitude, "longitude": currentStudent.longitude]
+            
+            parseClient.sendStudentInfo(userInfo, completionHandlerForSendingInfo: { (success, errorString) in
+                if success {
+                    print("Post Student Info Succeded")
+                    self.dismissViewControllerAnimated(true, completion: nil)
+                    
+                } else {
+                    self.alert.show(self, title: "Error sending information", message: errorString!, actionText: "Dismiss", additionalAction: nil)
+                }
+                
+            })
+            
+        }
     }
 
 }

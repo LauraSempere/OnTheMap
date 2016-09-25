@@ -16,7 +16,7 @@ struct StudentInformation{
     var objectId = String()
     var firstName = String()
     var lastName = String()
-    var uniqueKey = Int()
+    var uniqueKey = String()
     var createdAt = String()
     var updatedAt = String()
     
@@ -27,7 +27,7 @@ struct StudentInformation{
         }
         
         if let lon = info["longitude"] as? Double {
-            self.latitude = lon
+            self.longitude = lon
         }
         
         if let mURL = info["mediaURL"] as? String {
@@ -50,7 +50,7 @@ struct StudentInformation{
             self.mapString = mapString
         }
         
-        if let uniqueKey = info["uniqueKey"] as? Int {
+        if let uniqueKey = info["uniqueKey"] as? String {
             self.uniqueKey = uniqueKey
         }
         

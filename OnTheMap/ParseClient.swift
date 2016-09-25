@@ -8,7 +8,7 @@
 
 import Foundation
 
-class ParseClient:NSObject {
+class ParseClient:HTTPClient {
     
     let session = NSURLSession.sharedSession()
     var studentsInformation = [StudentInformation()]
@@ -27,7 +27,7 @@ class ParseClient:NSObject {
     }
     
     private func getInfoFromParse(completionHandler: (success: Bool, studentsInfo: [StudentInformation]?, errorString: String?) -> Void){
-        taskForGETMethod(Methods.StudentLocation) { (result, error) in
+        taskForGETMethod() { (result, error) in
             if let error = error {
                 completionHandler(success: false, studentsInfo: nil, errorString: error.localizedDescription)
             }else {
@@ -45,8 +45,71 @@ class ParseClient:NSObject {
         
     }
     
-    private func taskForGETMethod(method:String, completionHandler:(result: AnyObject!, error: NSError?) -> Void) -> NSURLSessionTask {
-        let url = parseApiURLFromParams(["limit":100])
+    func sendStudentInfo(info: [String:AnyObject], completionHandlerForSendingInfo handler:(success: Bool, errorString: String?) -> Void){
+        let jsonBody = convertObjectToData(info)
+        taskForPOSTMethod(nil, jsonBody: jsonBody) { (result, error) in
+            if let err = error {
+                handler(success: false, errorString: err.localizedDescription)
+            } else {
+                self.getStudentsInformation(completionHandlerForStudentsLocation: { (success, errorString) in
+                    handler(success: true, errorString: nil)
+                })
+                
+            }
+        }
+        
+        
+        }
+   
+    private func taskForPOSTMethod(params:[String:AnyObject]?, jsonBody: NSData!, completionHandler: (result: AnyObject!, error: NSError?) -> Void) -> NSURLSessionTask {
+        let url = parseApiURLFromParams(params)
+        let request = NSMutableURLRequest(URL: url)
+        request.HTTPMethod = "POST"
+        request.addValue(Constants.AppID, forHTTPHeaderField: "X-Parse-Application-Id")
+        request.addValue(Constants.ApiKey, forHTTPHeaderField: "X-Parse-REST-API-Key")
+        request.addValue("application/json", forHTTPHeaderField: "Accept")
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        if let jsonBody = jsonBody {
+            request.HTTPBody = jsonBody
+        }
+        let task = session.dataTaskWithRequest(request){(data, response, error) in
+            func sendError(error: String) {
+                print(error)
+                let userInfo = [NSLocalizedDescriptionKey : error]
+                completionHandler(result: nil, error: NSError(domain: "taskForPOSTMethod", code: 1, userInfo: userInfo))
+            }
+            
+            guard (error == nil) else {
+                sendError("There was an error in the request: \(error)")
+                return
+            }
+            
+            /* GUARD: Was there any data returned? */
+            guard let data = data else {
+                sendError("No data was returned by the request!")
+                return
+            }
+            self.convertDataWithCompletionHandler(data, completionHandlerForConvertData: { (result, error) in
+                guard(error == nil) else {
+                    print("Error parsing data")
+                    return
+                }
+                
+                if let err = result["error"] as? String {
+                    sendError(err)
+                } else {
+                    completionHandler(result: result, error: nil)
+                }
+            })
+            
+        }
+        task.resume()
+        return task
+        
+    }
+    
+    private func taskForGETMethod(completionHandler:(result: AnyObject!, error: NSError?) -> Void) -> NSURLSessionTask {
+        let url = parseApiURLFromParams(["limit":4])
         let request = NSMutableURLRequest(URL: url)
         request.HTTPMethod = "GET"
         request.addValue(Constants.AppID, forHTTPHeaderField: "X-Parse-Application-Id")
@@ -102,21 +165,6 @@ class ParseClient:NSObject {
         completionHandlerForCreateStudent(students: studentsInfo, error: nil)
     }
     
-    // given raw JSON, return a usable Foundation object
-    private func convertDataWithCompletionHandler(data: NSData, completionHandlerForConvertData: (result: AnyObject!, error: NSError?) -> Void) {
-        
-        var parsedResult: AnyObject!
-        do {
-            parsedResult = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
-        } catch {
-            let userInfo = [NSLocalizedDescriptionKey : "Could not parse the data as JSON: '\(data)'"]
-            completionHandlerForConvertData(result: nil, error: NSError(domain: "convertDataWithCompletionHandler", code: 1, userInfo: userInfo))
-        }
-        
-        completionHandlerForConvertData(result: parsedResult, error: nil)
-    }
-    
-
     private func parseApiURLFromParams(params:[String:AnyObject]?) -> NSURL {
         let components = NSURLComponents()
         components.scheme = Constants.ApiScheme

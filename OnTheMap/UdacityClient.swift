@@ -8,10 +8,11 @@
 
 import Foundation
 
-class UdacityClient:NSObject {
+class UdacityClient:HTTPClient {
     
     let session = NSURLSession.sharedSession()
-    var accountKey:String!
+    // var accountKey:String!
+    var currentStudent = StudentInformation()
     
     private func udacityURLFromParams(params:[String:AnyObject]? = nil, method:String? = nil) -> NSURL {
         
@@ -32,12 +33,13 @@ class UdacityClient:NSObject {
     
     func loginWithCredentitals(username:String, password:String, completionHandler hander: (success: Bool, errorString: String?) ->Void ) {
         
-        let jsonData = convertObjectToData(["udacity": ["username": username, "password": password]])
+        let jsonData:NSData! = convertObjectToData(["udacity": ["username": username, "password": password]])
         
         authenticateUser(jsonData) { (success, accountKey, errorString) in
             if success {
                 hander(success: true, errorString: nil)
-                self.accountKey = accountKey
+                self.currentStudent.uniqueKey = accountKey!
+                // self.accountKey = accountKey
             }else{
                 hander(success: false, errorString: errorString)
             }
@@ -52,6 +54,8 @@ class UdacityClient:NSObject {
                 completionHandler(success: false, accountKey: nil, errorString: error.localizedDescription)
             }else {
                 if let account = result["account"] {
+                    print("Account -->> \(account)")
+                    print("Result -->> \(result)")
                     if let accountKey = account!["key"] as? String {
                         completionHandler(success: true, accountKey: accountKey, errorString: nil)
                     }
@@ -111,35 +115,6 @@ class UdacityClient:NSObject {
         return task
     
     }
-    
-    // Serializes Foundation object into JSON data
-    private func convertObjectToData(object:AnyObject) -> NSData {
-        var jsonData:NSData = NSData()
-        do {
-            jsonData = try NSJSONSerialization.dataWithJSONObject(object, options: .PrettyPrinted)
-       
-        }catch{
-            print("Error serializing JSON data")
-            
-        }
-        return jsonData
-    }
-    
-    // given raw JSON, return a usable Foundation object
-    private func convertDataWithCompletionHandler(data: NSData, completionHandlerForConvertData: (result: AnyObject!, error: NSError?) -> Void) {
-        
-        var parsedResult: AnyObject!
-        do {
-            parsedResult = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
-        } catch {
-            let userInfo = [NSLocalizedDescriptionKey : "Could not parse the data as JSON: '\(data)'"]
-            completionHandlerForConvertData(result: nil, error: NSError(domain: "convertDataWithCompletionHandler", code: 1, userInfo: userInfo))
-        }
-        
-        completionHandlerForConvertData(result: parsedResult, error: nil)
-    }
-
-    
     
     // MARK: Shared Instance
     
