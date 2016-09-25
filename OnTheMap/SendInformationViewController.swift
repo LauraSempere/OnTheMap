@@ -39,14 +39,8 @@ class SendInformationViewController: UIViewController, MKMapViewDelegate, UIText
 
         locationTextField.backgroundColor = UIColor.blueColor()
         mediaURLTextField.backgroundColor = UIColor.blueColor()
-        // Do any additional setup after loading the view.
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
     @IBAction func cancel(sender: AnyObject) {
         self.dismissViewControllerAnimated(true, completion: nil)
     }
@@ -62,7 +56,7 @@ class SendInformationViewController: UIViewController, MKMapViewDelegate, UIText
     }
     
     @IBAction func parseLocationString(sender: AnyObject) {
-    var location = CLGeocoder()
+        let location = CLGeocoder()
         self.toggleActivityIndicator(true)
         location.geocodeAddressString(locationTextField.text!) { (placemark: [CLPlacemark]?, error: NSError?) in
             if let err = error {
@@ -75,6 +69,11 @@ class SendInformationViewController: UIViewController, MKMapViewDelegate, UIText
                     let region = MKCoordinateRegion(center: center, span: MKCoordinateSpan(latitudeDelta: 10, longitudeDelta: 10))
                     
                     self.mapView.setRegion(region, animated: true)
+                    let annotation = MKPointAnnotation()
+                    annotation.coordinate = center
+                    annotation.title = location.description
+                    self.mapView.addAnnotation(annotation)
+                    
                     self.submitMediaURLView.hidden = false
                     self.submitLocationView.hidden = true
                     self.toggleActivityIndicator(false)
@@ -84,8 +83,6 @@ class SendInformationViewController: UIViewController, MKMapViewDelegate, UIText
                     self.alert.show(self, title: "No location found", message: "Could not find your location. Please try again", actionText: "Dismiss", additionalAction:   nil)
                     self.toggleActivityIndicator(false)
                 }
-                
-                
                 
             }
         }
