@@ -9,7 +9,7 @@
 import UIKit
 import MapKit
 
-class SendInformationViewController: UIViewController, MKMapViewDelegate {
+class SendInformationViewController: UIViewController, MKMapViewDelegate, UITextFieldDelegate {
     
     @IBOutlet weak var submitLocationView:UIStackView!
     @IBOutlet weak var submitMediaURLView:UIStackView!
@@ -28,10 +28,15 @@ class SendInformationViewController: UIViewController, MKMapViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        locationTextField.delegate = self
+        mediaURLTextField.delegate = self
+        locationTextField.clearsOnBeginEditing = true
+        mediaURLTextField.clearsOnBeginEditing = true
+        
         activityIndicatorView.hidden = true
         submitLocationView.hidden = false
         submitMediaURLView.hidden = true
-        
+
         locationTextField.backgroundColor = UIColor.blueColor()
         mediaURLTextField.backgroundColor = UIColor.blueColor()
         // Do any additional setup after loading the view.
@@ -61,9 +66,9 @@ class SendInformationViewController: UIViewController, MKMapViewDelegate {
         self.toggleActivityIndicator(true)
         location.geocodeAddressString(locationTextField.text!) { (placemark: [CLPlacemark]?, error: NSError?) in
             if let err = error {
-                print("Error::::: \(err)")
+                print("Error: \(err)")
                 self.toggleActivityIndicator(false)
-                self.alert.show(self, title:"Error Getting your Location", message: "Check that you provided a valid location", actionText: "Dismiss", additionalAction: nil)
+                self.alert.show(self, title:"Error Getting your Location", message: "Please provide a correct address, city or country", actionText: "Dismiss", additionalAction: nil)
             } else {
                 if let location = placemark!.last?.location {
                     let center = CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
@@ -76,6 +81,7 @@ class SendInformationViewController: UIViewController, MKMapViewDelegate {
                 
                 } else {
                     print("No location found")
+                    self.alert.show(self, title: "No location found", message: "Could not find your location. Please try again", actionText: "Dismiss", additionalAction:   nil)
                     self.toggleActivityIndicator(false)
                 }
                 
@@ -86,8 +92,15 @@ class SendInformationViewController: UIViewController, MKMapViewDelegate {
     
     }
     
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        if textField.isFirstResponder() {
+            textField.resignFirstResponder()
+        }
+        return true
+    }
+    
     @IBAction func submitLocationInformation(sender: AnyObject) {
-
+        
     }
 
 }
