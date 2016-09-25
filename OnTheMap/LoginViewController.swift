@@ -8,7 +8,7 @@
 
 import UIKit
 
-class LoginViewController: UIViewController {
+class LoginViewController: UIViewController, UITextFieldDelegate {
 
     @IBOutlet weak var usernameTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
@@ -19,16 +19,18 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var activityIndicatorView: UIView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
+    let alert = Alert()
+    let app = UIApplication.sharedApplication()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         debugTextLabel.text = ""
         activityIndicatorView.hidden = true
-        // Do any additional setup after loading the view, typically from a nib.
-    }
+        
+        usernameTextField.delegate = self
+        passwordTextField.delegate = self
+        passwordTextField.secureTextEntry = true
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     func updateUILoadingState(loading:Bool){
@@ -48,7 +50,6 @@ class LoginViewController: UIViewController {
             performUIUpdatesOnMain {
                 if success {
                     print("Login in successfully!")
-                    self.displayError("Login Successfully")
                     self.updateUILoadingState(false)
                     let tabBarVC = self.storyboard?.instantiateViewControllerWithIdentifier("TabBarController") as! UITabBarController
                     self.presentViewController(tabBarVC, animated: true, completion: nil)
@@ -62,12 +63,20 @@ class LoginViewController: UIViewController {
     }
     
     @IBAction func signup(sender: AnyObject) {
+        app.openURL(NSURL(string: "https://auth.udacity.com/sign-up")!)
+    }
     
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        if textField.isFirstResponder() {
+            textField.resignFirstResponder()
+        }
+        
+        return true
     }
     
     private func displayError(error:String?) {
         if let error = error {
-            debugTextLabel.text = error
+            alert.show(self, title: "Login Failed", message: error, actionText: "Dismiss", additionalAction: nil)
         }
     }
 

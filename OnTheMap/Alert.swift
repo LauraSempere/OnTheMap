@@ -11,7 +11,7 @@ import UIKit
 
 class Alert: UIViewController {
 
-    func show(currentVC:AnyObject, title:String, message:String, actionText:String, additionalAction: UIAlertAction?){
+    func show(target:AnyObject, title:String, message:String, actionText:String, additionalAction: UIAlertAction?){
         let alertVC = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.Alert)
         let action = UIAlertAction(title: actionText, style: UIAlertActionStyle.Default) {
             action in
@@ -22,7 +22,7 @@ class Alert: UIViewController {
             alertVC.addAction(additionalAction)
         }
         
-        currentVC.presentViewController(alertVC, animated: true, completion: nil)
+        target.presentViewController(alertVC, animated: true, completion: nil)
     }
 
 }
