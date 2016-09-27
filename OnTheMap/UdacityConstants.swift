@@ -15,6 +15,7 @@ extension UdacityClient {
     
     struct Methods {
         static let Auth = "/api/session"
+        static let Users = "/api/users"
     }
 
 

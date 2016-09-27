@@ -35,10 +35,13 @@ class UdacityClient:HTTPClient {
         
         let jsonData:NSData! = convertObjectToData(["udacity": ["username": username, "password": password]])
         
-        authenticateUser(jsonData) { (success, accountKey, errorString) in
+        authenticateUser(jsonData) { (success, userData, errorString) in
             if success {
                 hander(success: true, errorString: nil)
-                self.currentStudent.uniqueKey = accountKey!
+                self.currentStudent = StudentInformation(info: userData!)
+                print("Current Student ---> \(self.currentStudent)")
+                //self.currentStudent.uniqueKey = userData["uniqueKey"]
+                //self.currentStudent.uniqueKey = accountKey!
                // self.accountKey = accountKey
             }else{
                 hander(success: false, errorString: errorString)
@@ -46,22 +49,101 @@ class UdacityClient:HTTPClient {
         }
     }
     
-    private func authenticateUser(jsonData:NSData, completionHandler: (success: Bool, accountKey:String?, errorString:String?) -> Void){
+    private func authenticateUser(jsonData:NSData, completionHandler: (success: Bool, userData:[String: AnyObject]?, errorString:String?) -> Void){
         
         taskForPOSTMethod(Methods.Auth,params: [:], jsonBody: jsonData){(result, error) in
             if let error = error {
                 print("Error authenticating user: \(error)")
-                completionHandler(success: false, accountKey: nil, errorString: error.localizedDescription)
+                completionHandler(success: false, userData: nil, errorString: error.localizedDescription)
             }else {
                 if let account = result["account"] {
                     if let accountKey = account!["key"] as? String {
-                        completionHandler(success: true, accountKey: accountKey, errorString: nil)
+                        self.getUserData(accountKey, completionHandlerForUserData: { (success, userData, errorString) in
+                            if success {
+                                guard let user = userData["user"] else {
+                                    completionHandler(success: false, userData: nil, errorString: "No user found in the response")
+                                    return
+                                }
+                                var firstName = String()
+                                var lastName = String()
+                                
+                                if let fName = user!["first_name"] as? String {
+                                    firstName = fName
+                                }
+                                if let lName = user!["last_name"] as? String {
+                                    lastName = lName
+                                }
+                                completionHandler(success: true, userData: ["firstName":firstName, "lastName":lastName, "uniqueKey": accountKey], errorString: nil)
+                            } else {
+                                completionHandler(success: false, userData: nil, errorString: errorString)
+                            }
+                        })
+                        
                     }
                 }else {
-                    completionHandler(success: false, accountKey: nil, errorString: "Could not find account key")
+                    completionHandler(success: false, userData: nil, errorString: "No account Key found")
                 }
             }
         }
+    }
+    
+    private func getUserData(accountKey:String, completionHandlerForUserData: (success: Bool, userData:AnyObject!, errorString: String?) -> Void)  {
+        let method = Methods.Users + "/" + accountKey
+        
+        taskForGETMethod(method, params: nil) { (result, error) in
+            guard (error == nil) else {
+                completionHandlerForUserData(success: false, userData: nil, errorString: error?.localizedDescription)
+                return
+            }
+            completionHandlerForUserData(success: true, userData: result, errorString: nil)
+        }
+        
+    }
+    
+    private func taskForGETMethod(method:String, params:[String:AnyObject]?, completionHandler:(result: AnyObject!, error: NSError?) -> Void) -> NSURLSessionTask {
+        let url = udacityURLFromParams(params, method: method)
+        let request = NSMutableURLRequest(URL: url)
+        request.HTTPMethod = "GET"
+        let task = session.dataTaskWithRequest(request){data, response, error in
+            func sendError(error: String) {
+                print(error)
+                let userInfo = [NSLocalizedDescriptionKey : error]
+                completionHandler(result: nil, error: NSError(domain: "taskForGETMethod", code: 1, userInfo: userInfo))
+            }
+
+            
+            guard (error == nil) else {
+                completionHandler(result: nil, error: error)
+                return
+            }
+            
+            guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
+                sendError("Status Code different from 2xx")
+                return
+            }
+            
+            guard let data = data else {
+                sendError("No user found")
+                return
+            }
+            
+            let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5))
+            
+            self.convertDataWithCompletionHandler(newData, completionHandlerForConvertData: { (result, error) in
+                guard (error == nil) else {
+                    completionHandler(result: nil, error: error)
+                    return
+                }
+                
+                completionHandler(result: result, error: nil)
+                
+            })
+            
+        }
+        task.resume()
+        
+        return task
+
     }
     
     private func taskForPOSTMethod(method: String, params: [String:AnyObject], jsonBody:NSData!, completionHandler: (result: AnyObject!, error: NSError?) -> Void) -> NSURLSessionTask {

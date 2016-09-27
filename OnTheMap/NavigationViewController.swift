@@ -22,10 +22,11 @@ class NavigationViewController: UINavigationController {
         let navigation = UINavigationItem()
         navigation.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: UIBarButtonItemStyle.Done, target: self, action: #selector(NavigationViewController.logout))
         navigation.title = "On The Map"
+      
         let pinButton = UIBarButtonItem(image: pinIconImage, style: UIBarButtonItemStyle.Done, target: self, action: #selector(NavigationViewController.showSendInfoViewController))
         let reloadButton = UIBarButtonItem(barButtonSystemItem:
-            .Redo, target: self, action: #selector(NavigationViewController.refreshLocations))
-        navigation.setRightBarButtonItems([pinButton, reloadButton], animated: true)
+            .Refresh, target: self, action: #selector(NavigationViewController.refreshLocations))
+        navigation.setRightBarButtonItems([reloadButton, pinButton], animated: true)
         self.navigationBar.items =  [navigation]
         
     }
