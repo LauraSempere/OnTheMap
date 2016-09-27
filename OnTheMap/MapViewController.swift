@@ -14,8 +14,12 @@ class MapViewController: UIViewController, MKMapViewDelegate {
 
     @IBOutlet weak var mapView: MKMapView!
     
+    @IBOutlet weak var activityIndicatorView: UIView!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        activityIndicatorView.hidden = true
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -29,6 +33,16 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             } else {
                 print("Error getting locations: \(errorString)")
             }
+        }
+    }
+    
+    func setUILoadingState(loading: Bool) {
+        if loading {
+            activityIndicatorView.hidden = false
+            activityIndicator.startAnimating()
+        } else {
+            activityIndicatorView.hidden = true
+            activityIndicator.stopAnimating()
         }
     }
     

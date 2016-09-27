@@ -24,15 +24,47 @@ class NavigationViewController: UINavigationController {
         navigation.title = "On The Map"
         let pinButton = UIBarButtonItem(image: pinIconImage, style: UIBarButtonItemStyle.Done, target: self, action: #selector(NavigationViewController.showSendInfoViewController))
         let reloadButton = UIBarButtonItem(barButtonSystemItem:
-            .Redo, target: self, action: #selector(NavigationViewController.sayHi))
+            .Redo, target: self, action: #selector(NavigationViewController.refreshLocations))
         navigation.setRightBarButtonItems([pinButton, reloadButton], animated: true)
         self.navigationBar.items =  [navigation]
         
     }
     
-    func sayHi () {
-        print("Hi")
-        print(self.topViewController)
+    func refreshLocations(){
+        if let mapVC = self.topViewController as? MapViewController {
+            mapVC.setUILoadingState(true)
+            parseClient.getStudentsInformation(completionHandlerForStudentsLocation: { (success, errorString) in
+                if success {
+                    performUIUpdatesOnMain({ 
+                        mapVC.setUILoadingState(false)
+                    })
+                } else {
+                    performUIUpdatesOnMain({
+                        mapVC.setUILoadingState(false)
+                        self.alert.show(mapVC, title: "Could not update", message: errorString!, actionText: "Dismiss", additionalAction: nil)
+                    })
+                }
+            })
+        }
+        
+        if let tableVC = self.topViewController as? LocationsTableViewController {
+            tableVC.loading = true
+            tableVC.refreshData()
+            parseClient.getStudentsInformation(completionHandlerForStudentsLocation: { (success, errorString) in
+                if success {
+                    performUIUpdatesOnMain({
+                        tableVC.loading = false
+                        tableVC.refreshData()
+                    })
+                } else {
+                    performUIUpdatesOnMain({
+                        tableVC.loading = false
+                        tableVC.refreshData()
+                        self.alert.show(tableVC, title: "Could not update", message: errorString!, actionText: "Dismiss", additionalAction: nil)
+                    })
+                }
+            })
+        }
     }
     
     func logout() {

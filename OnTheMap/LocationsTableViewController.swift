@@ -12,9 +12,14 @@ class LocationsTableViewController: UITableViewController {
    
     let parseClient = ParseClient.sharedInstance()
     let app = UIApplication.sharedApplication()
+    var loading = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
+    }
+    
+    func refreshData(){
+        tableView.reloadData()
     }
 
     // MARK: - Table view data source
@@ -29,11 +34,20 @@ class LocationsTableViewController: UITableViewController {
 
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("studentsCell", forIndexPath: indexPath)
+        let cell = tableView.dequeueReusableCellWithIdentifier("studentsCell", forIndexPath: indexPath) as! studentsLocationCell
        
-        cell.imageView?.image = UIImage(named: "pin")
-        cell.textLabel!.text = parseClient.studentsInformation[indexPath.row].firstName + " " + parseClient.studentsInformation[indexPath.row].lastName
-
+        cell.icon.image = UIImage(named: "pin")
+        cell.name.text = parseClient.studentsInformation[indexPath.row].firstName + " " + parseClient.studentsInformation[indexPath.row].lastName
+        if loading {
+            cell.activityIndicator.hidden = false
+            cell.name.hidden = true
+            cell.activityIndicator.startAnimating()
+        } else {
+            cell.activityIndicator.hidden = true
+            cell.name.hidden = false
+            cell.activityIndicator.stopAnimating()
+        }
+        
         return cell
     }
     
