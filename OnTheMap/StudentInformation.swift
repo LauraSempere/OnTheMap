@@ -67,4 +67,10 @@ struct StudentInformation{
     
     }
     
+    func studentDictionary() -> [String:AnyObject]{
+        return ["firstName": self.firstName, "lastName": self.lastName, "latitude":self.latitude,
+                "longitude":self.longitude, "mediaURL": self.mediaURL, "objectId": self.objectId, "mapString": self.mapString,
+        "uniqueKey":self.uniqueKey]
+    }
+    
 }

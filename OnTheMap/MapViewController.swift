@@ -16,19 +16,33 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+    }
+    
+    override func viewWillAppear(animated: Bool) {
         parseClient.getStudentsInformation { (success, errorString) in
             if success {
                 print("Get locations succedeeded!")
-                self.setLocationPins()
+                performUIUpdatesOnMain{
+                    self.setLocationPins()
+                }
                 
             } else {
                 print("Error getting locations: \(errorString)")
             }
         }
-
     }
     
     func setLocationPins(){
+        let currentAnnotations = self.mapView.annotations
+            for _annotation in currentAnnotations {
+                if let annotation = _annotation as? MKAnnotation
+                {
+                    self.mapView.removeAnnotation(annotation)
+                }
+            }
+        
+        
+    
         let locations = parseClient.studentsInformation
         var annotations = [MKPointAnnotation]()
         
@@ -56,7 +70,6 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         let reuseId = "pin"
         
         var pinView = mapView.dequeueReusableAnnotationViewWithIdentifier(reuseId) as? MKPinAnnotationView
-        
         if pinView == nil {
             pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
             pinView!.canShowCallout = true

@@ -47,18 +47,21 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     @IBAction func login(sender: AnyObject) {
         updateUILoadingState(true)
         UdacityClient.sharedInstance().loginWithCredentitals(usernameTextField.text!, password: passwordTextField.text!){(success: Bool, errorString:String?) in
-            performUIUpdatesOnMain {
-                if success {
-                    print("Login in successfully!")
+            if success {
+                print("Login in successfully!")
+                performUIUpdatesOnMain{
                     self.updateUILoadingState(false)
                     let tabBarVC = self.storyboard?.instantiateViewControllerWithIdentifier("TabBarController") as! UITabBarController
                     self.presentViewController(tabBarVC, animated: true, completion: nil)
-                }else{
-                    print("Login Failed")
+                }
+            } else {
+                print("Login Failed")
+                performUIUpdatesOnMain{
                     self.updateUILoadingState(false)
                     self.displayError(errorString)
                 }
             }
+            
         }
     }
     

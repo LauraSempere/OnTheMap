@@ -24,5 +24,13 @@ class Alert: UIViewController {
         
         target.presentViewController(alertVC, animated: true, completion: nil)
     }
+    
+    func show(target:AnyObject, title:String, message:String, withCustomActions actions:[UIAlertAction]) {
+        let alertVC = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.Alert)
+        for action in actions {
+            alertVC.addAction(action)
+        }
+        target.presentViewController(alertVC, animated: true, completion: nil)
+    }
 
 }

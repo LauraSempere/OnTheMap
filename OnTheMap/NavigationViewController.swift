@@ -9,6 +9,10 @@
 import UIKit
 
 class NavigationViewController: UINavigationController {
+    
+    let parseClient = ParseClient.sharedInstance()
+    let udacityClient = UdacityClient.sharedInstance()
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,6 +33,31 @@ class NavigationViewController: UINavigationController {
     
     func showSendInfoViewController(){
         let sendInfoVC = self.storyboard?.instantiateViewControllerWithIdentifier("SendInfoVC") as? SendInformationViewController
-        self.presentViewController(sendInfoVC!, animated: true, completion: nil)
+        sendInfoVC?.showActivityIndicatior = true
+        
+        self.presentViewController(sendInfoVC!, animated: true) {
+            self.parseClient.getStudentInfo { (success, errorString) in
+                if success {
+
+                    let updateAction = UIAlertAction(title: "Update", style: UIAlertActionStyle.Default, handler: { (UIAlertAction) in
+                         sendInfoVC?.toggleActivityIndicator(false)
+                    })
+                    
+                    let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: { (UIAlertAction) in
+                        sendInfoVC!.dismissViewControllerAnimated(true, completion: nil)
+                    })
+                    
+                    performUIUpdatesOnMain({
+                        let alert = Alert()
+                        alert.show(sendInfoVC!, title: "Update Location", message: "You already have submitted your location. Do you want to update it?", withCustomActions: [updateAction, cancelAction])
+                    })
+                    
+                } else {
+                    performUIUpdatesOnMain({ 
+                      sendInfoVC?.toggleActivityIndicator(false)
+                    })
+                }
+            }
+        }
     }
 }

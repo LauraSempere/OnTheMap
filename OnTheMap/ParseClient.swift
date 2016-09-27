@@ -12,13 +12,14 @@ class ParseClient:HTTPClient {
     
     let session = NSURLSession.sharedSession()
     var studentsInformation = [StudentInformation()]
+    let udacityClient = UdacityClient.sharedInstance()
     
     func getStudentsInformation(completionHandlerForStudentsLocation handler:(success:Bool, errorString:String?) -> Void) {
         
         getInfoFromParse() {(success, studentsInfo, errorString) in
             if success {
                 self.studentsInformation = studentsInfo!
-                handler(success: true, errorString: nil)
+                    handler(success: true, errorString: nil)
             } else {
                 handler(success: false, errorString: errorString)
             }
@@ -27,7 +28,7 @@ class ParseClient:HTTPClient {
     }
     
     private func getInfoFromParse(completionHandler: (success: Bool, studentsInfo: [StudentInformation]?, errorString: String?) -> Void){
-        taskForGETMethod() { (result, error) in
+        taskForGETMethod(Methods.StudentLocation,url: nil, params: ["limit": 100]) { (result, error) in
             if let error = error {
                 completionHandler(success: false, studentsInfo: nil, errorString: error.localizedDescription)
             }else {
@@ -45,26 +46,28 @@ class ParseClient:HTTPClient {
         
     }
     
-    func sendStudentInfo(info: [String:AnyObject], completionHandlerForSendingInfo handler:(success: Bool, errorString: String?) -> Void){
+    func sendStudentInfo(info: [String:AnyObject], completionHandlerForSendingInfo handler:(success: Bool, objectId: String?, errorString: String?) -> Void){
         let jsonBody = convertObjectToData(info)
-        taskForPOSTMethod(nil, jsonBody: jsonBody) { (result, error) in
+        taskForSendDataMethod("POST",method: Methods.StudentLocation, jsonBody: jsonBody) { (result, error) in
             if let err = error {
-                handler(success: false, errorString: err.localizedDescription)
+                handler(success: false, objectId: nil, errorString: err.localizedDescription)
             } else {
-                self.getStudentsInformation(completionHandlerForStudentsLocation: { (success, errorString) in
-                    handler(success: true, errorString: nil)
-                })
+                if let objectId = result["objectId"] as? String {
+                    handler(success: true, objectId: objectId, errorString: nil)
+                   
+                } else {
+                    handler(success: false, objectId: nil, errorString: "No objectId found")
+                }
                 
             }
         }
         
-        
-        }
+    }
    
-    private func taskForPOSTMethod(params:[String:AnyObject]?, jsonBody: NSData!, completionHandler: (result: AnyObject!, error: NSError?) -> Void) -> NSURLSessionTask {
-        let url = parseApiURLFromParams(params)
+    private func taskForSendDataMethod(httpMethod:String, method:String, jsonBody: NSData!, completionHandler: (result: AnyObject!, error: NSError?) -> Void) -> NSURLSessionTask {
+        let url = parseApiURLFromParams(method, params: nil)
         let request = NSMutableURLRequest(URL: url)
-        request.HTTPMethod = "POST"
+        request.HTTPMethod = httpMethod
         request.addValue(Constants.AppID, forHTTPHeaderField: "X-Parse-Application-Id")
         request.addValue(Constants.ApiKey, forHTTPHeaderField: "X-Parse-REST-API-Key")
         request.addValue("application/json", forHTTPHeaderField: "Accept")
@@ -91,7 +94,7 @@ class ParseClient:HTTPClient {
             }
             self.convertDataWithCompletionHandler(data, completionHandlerForConvertData: { (result, error) in
                 guard(error == nil) else {
-                    print("Error parsing data")
+                    print("Error parsing data: \(error)")
                     return
                 }
                 
@@ -108,9 +111,47 @@ class ParseClient:HTTPClient {
         
     }
     
-    private func taskForGETMethod(completionHandler:(result: AnyObject!, error: NSError?) -> Void) -> NSURLSessionTask {
-        let url = parseApiURLFromParams(["limit":4])
-        let request = NSMutableURLRequest(URL: url)
+    func getStudentInfo(completionHandler handler:(success: Bool, errorString:String?) -> Void) {
+        let uniqueKey = udacityClient.currentStudent.uniqueKey
+        let queryString = "{\"uniqueKey\":\"\(uniqueKey)\"}"
+        let queryStringEncoded = queryString.stringByAddingPercentEncodingWithAllowedCharacters(.URLHostAllowedCharacterSet())
+        let url = NSURL(string: "https://parse.udacity.com/parse/classes/StudentLocation?where=\(queryStringEncoded!)")
+        
+        taskForGETMethod(nil, url: url, params: nil) { (result, error) in
+            if let err = error {
+                print("Error: \(error)")
+            } else {
+                guard let results = result["results"] as? [AnyObject] else {
+                    handler(success: false, errorString: "No User found in the DB")
+                    return
+                }
+                if results.isEmpty{
+                    handler(success: false, errorString: "No user found in the DB")
+                
+                } else {
+                    guard let result = results[0] as? [String:AnyObject] else {
+                        handler(success: false, errorString: "No User found in the DB")
+                        return
+                    }
+                    self.udacityClient.currentStudent = StudentInformation(info: result)
+                    handler(success: true, errorString: nil)
+                }
+                
+            }
+        }
+        
+    }
+    
+    private func taskForGETMethod(method: String!, url:NSURL!, params:[String:AnyObject]!, completionHandler:(result: AnyObject!, error: NSError?) -> Void) -> NSURLSessionTask {
+        let reqURL:NSURL!
+       
+        if let url = url {
+            reqURL = url
+        } else {
+            reqURL = parseApiURLFromParams(method, params: params)
+        }
+        
+        let request = NSMutableURLRequest(URL: reqURL!)
         request.HTTPMethod = "GET"
         request.addValue(Constants.AppID, forHTTPHeaderField: "X-Parse-Application-Id")
         request.addValue(Constants.ApiKey, forHTTPHeaderField: "X-Parse-REST-API-Key")
@@ -165,11 +206,25 @@ class ParseClient:HTTPClient {
         completionHandlerForCreateStudent(students: studentsInfo, error: nil)
     }
     
-    private func parseApiURLFromParams(params:[String:AnyObject]?) -> NSURL {
+    func updateStudentInfo(userInfo:[String:AnyObject], completionHandler: (success: Bool, errorString: String?) -> Void){
+        let objectId = udacityClient.currentStudent.objectId
+        let method = Methods.StudentLocation + "/" + objectId
+        let jsonBody = convertObjectToData(userInfo)
+        taskForSendDataMethod("PUT", method: method, jsonBody: jsonBody) { (result, error) in
+            if let err = error {
+                print("Error putting the data: \(err)")
+                completionHandler(success: false, errorString: error?.localizedDescription)
+            } else {
+                completionHandler(success: true, errorString: nil)
+            }
+        }
+    }
+    
+    private func parseApiURLFromParams(method:String, params:[String:AnyObject]?) -> NSURL {
         let components = NSURLComponents()
         components.scheme = Constants.ApiScheme
         components.host = Constants.ApiHost
-        components.path = Methods.StudentLocation
+        components.path = method
         
         if let params = params {
             components.queryItems = [NSURLQueryItem]()

@@ -26,9 +26,16 @@ class SendInformationViewController: UIViewController, MKMapViewDelegate, UIText
     
     let alert = Alert()
     let parseClient = ParseClient.sharedInstance()
-    // let udacityClient = UdacityClient.sharedInstance()
-    var currentStudent = UdacityClient.sharedInstance().currentStudent
+    let udacityClient = UdacityClient.sharedInstance()
+    var showActivityIndicatior:Bool = false
     
+    override func viewWillAppear(animated: Bool) {
+        if showActivityIndicatior {
+            toggleActivityIndicator(true)
+        } else {
+            toggleActivityIndicator(false)
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,7 +44,6 @@ class SendInformationViewController: UIViewController, MKMapViewDelegate, UIText
         locationTextField.clearsOnBeginEditing = true
         mediaURLTextField.clearsOnBeginEditing = true
         
-        activityIndicatorView.hidden = true
         submitLocationView.hidden = false
         submitMediaURLView.hidden = true
 
@@ -82,11 +88,11 @@ class SendInformationViewController: UIViewController, MKMapViewDelegate, UIText
                     self.submitLocationView.hidden = true
                     self.toggleActivityIndicator(false)
                     
-                    self.currentStudent.latitude = location.coordinate.latitude as! Double
-                    self.currentStudent.longitude = location.coordinate.longitude as! Double
-                    self.currentStudent.mapString = self.locationTextField.text!
+                    self.udacityClient.currentStudent.latitude = location.coordinate.latitude
+                    self.udacityClient.currentStudent.longitude = location.coordinate.longitude
+                    self.udacityClient.currentStudent.mapString = self.locationTextField.text!
                     
-                    print("Current Student:: \(self.currentStudent)")
+                    print("Current Student:: \(self.udacityClient.currentStudent)")
                 
                 } else {
                     print("No location found")
@@ -99,29 +105,76 @@ class SendInformationViewController: UIViewController, MKMapViewDelegate, UIText
     
     }
     
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
-        if textField.isFirstResponder() {
-            textField.resignFirstResponder()
+    
+    private func sendUserInformation(userInfo:[String:AnyObject]){
+        parseClient.sendStudentInfo(userInfo, completionHandlerForSendingInfo: { (success, objectId,errorString) in
+            if success {
+                print("Post Student Info Succeded")
+                self.udacityClient.currentStudent.objectId = objectId!
+                
+                // Call Parse API again to get the student's data updated
+                self.parseClient.getStudentsInformation(completionHandlerForStudentsLocation: { (success, errorString) in
+                    if success {
+                        print("Students locations updated")
+                        self.toggleActivityIndicator(false)
+                        self.dismissViewControllerAnimated(true, completion: nil)
+                        
+                    } else {
+                        self.toggleActivityIndicator(false)
+                        self.alert.show(self, title: "Error updating students' locations", message: errorString!, actionText: "Dismiss", additionalAction: nil)
+                    }
+                    
+                    
+                })
+                
+            } else {
+                self.alert.show(self, title: "Error sending information", message: errorString!, actionText: "Dismiss", additionalAction: nil)
+            }
+            
+        })
+    }
+    
+    private func updateUserInformation(userInfo:[String:AnyObject]){
+        parseClient.updateStudentInfo(userInfo) { (success, errorString) in
+            if success {
+            performUIUpdatesOnMain({
+                self.toggleActivityIndicator(false)
+                self.dismissViewControllerAnimated(true, completion: nil)
+            })
+            } else {
+                performUIUpdatesOnMain({
+                    self.toggleActivityIndicator(false)
+                    self.alert.show(self, title: "Error updating", message: errorString!, actionText: "Dismmiss", additionalAction: nil)
+                })
+            }
         }
-        return true
     }
     
     @IBAction func submitLocationInformation(sender: AnyObject) {
+        toggleActivityIndicator(true)
         if let mediaURL = mediaURLTextField.text {
-            let userInfo:[String: AnyObject] = ["uniqueKey": currentStudent.uniqueKey, "firstName": "Laura", "lastName": "Sempere", "mapString" : currentStudent.mapString, "mediaURL": mediaURL, "latitude":currentStudent.latitude, "longitude": currentStudent.longitude]
-            
-            parseClient.sendStudentInfo(userInfo, completionHandlerForSendingInfo: { (success, errorString) in
-                if success {
-                    print("Post Student Info Succeded")
-                    self.dismissViewControllerAnimated(true, completion: nil)
-                    
-                } else {
-                    self.alert.show(self, title: "Error sending information", message: errorString!, actionText: "Dismiss", additionalAction: nil)
-                }
-                
-            })
-            
+            udacityClient.currentStudent.mediaURL = mediaURL
         }
+        let userInfo:[String: AnyObject] = udacityClient.currentStudent.studentDictionary()
+        
+        if udacityClient.currentStudent.objectId.isEmpty {
+            print("Send user for the first time")
+            sendUserInformation(userInfo)
+        } else {
+            print("Update user")
+            updateUserInformation(userInfo)
+        }
+        
+        // MARK: TextField Delegate
+        
+        func textFieldShouldReturn(textField: UITextField) -> Bool {
+            if textField.isFirstResponder() {
+                textField.resignFirstResponder()
+            }
+            return true
+        }
+        
+        
     }
 
 }
