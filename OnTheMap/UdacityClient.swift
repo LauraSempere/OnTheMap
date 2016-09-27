@@ -11,7 +11,7 @@ import Foundation
 class UdacityClient:HTTPClient {
     
     let session = NSURLSession.sharedSession()
-    // var accountKey:String!
+   // var accountKey:String!
     var currentStudent = StudentInformation()
     
     private func udacityURLFromParams(params:[String:AnyObject]? = nil, method:String? = nil) -> NSURL {
@@ -39,7 +39,7 @@ class UdacityClient:HTTPClient {
             if success {
                 hander(success: true, errorString: nil)
                 self.currentStudent.uniqueKey = accountKey!
-                // self.accountKey = accountKey
+               // self.accountKey = accountKey
             }else{
                 hander(success: false, errorString: errorString)
             }
@@ -54,8 +54,6 @@ class UdacityClient:HTTPClient {
                 completionHandler(success: false, accountKey: nil, errorString: error.localizedDescription)
             }else {
                 if let account = result["account"] {
-                    print("Account -->> \(account)")
-                    print("Result -->> \(result)")
                     if let accountKey = account!["key"] as? String {
                         completionHandler(success: true, accountKey: accountKey, errorString: nil)
                     }
@@ -114,6 +112,50 @@ class UdacityClient:HTTPClient {
         
         return task
     
+    }
+    
+    func logout(completionHandler:(success:Bool, errorString:String?) -> Void){
+        let url = udacityURLFromParams(nil, method: Methods.Auth)
+        let request = NSMutableURLRequest(URL: url)
+        request.HTTPMethod = "DELETE"
+        var xsrfCookie:NSHTTPCookie? = nil
+        let sharedCookieStorage = NSHTTPCookieStorage.sharedHTTPCookieStorage()
+        for cookie in sharedCookieStorage.cookies! {
+            if cookie.name == "XSRF-TOKEN"{
+                xsrfCookie = cookie
+            }
+        }
+        if let xsrfCookie = xsrfCookie {
+            request.setValue(xsrfCookie.value, forHTTPHeaderField: "X-XSRF-TOKEN")
+        }
+        
+        let task = session.dataTaskWithRequest(request){(data, response, error) in
+            guard(error == nil) else {
+                completionHandler(success: false, errorString: error!.localizedDescription)
+                return
+            }
+            
+            guard let data = data else {
+                completionHandler(success: false, errorString: "Log out failed")
+                return
+            }
+            
+            let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5))
+            
+            self.convertDataWithCompletionHandler(newData, completionHandlerForConvertData: { (result, error) in
+                guard (error == nil) else {
+                    completionHandler(success: false, errorString: error?.localizedDescription)
+                    return
+                }
+                guard (result["session"] != nil) else {
+                    completionHandler(success: false, errorString: "No session found")
+                    return
+                }
+                completionHandler(success: true, errorString: nil)
+            })
+        }
+        
+        task.resume()
     }
     
     // MARK: Shared Instance
