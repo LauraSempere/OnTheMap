@@ -10,27 +10,39 @@ import UIKit
 
 class LoginViewController: UIViewController, UITextFieldDelegate {
 
+    @IBOutlet weak var loginFormView: UIStackView!
+    @IBOutlet weak var udacityLogo: UIImageView!
+    @IBOutlet weak var loginLabel: UILabel!
     @IBOutlet weak var usernameTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var loginButton: UIButton!
     @IBOutlet weak var signupButton: UIButton!
-    @IBOutlet weak var debugTextLabel: UILabel!
+    
     
     @IBOutlet weak var activityIndicatorView: UIView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     let alert = Alert()
     let app = UIApplication.sharedApplication()
+    var loginOutLoading = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        debugTextLabel.text = ""
         activityIndicatorView.hidden = true
+        udacityLogo.hidden = true
         
         usernameTextField.delegate = self
         passwordTextField.delegate = self
         passwordTextField.secureTextEntry = true
 
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        if loginOutLoading {
+            loginoutLoadingState(true)
+        } else {
+            loginoutLoadingState(false)
+        }
     }
     
     func updateUILoadingState(loading:Bool){
@@ -42,6 +54,12 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             activityIndicator.stopAnimating()
         }
         
+    }
+    
+    func loginoutLoadingState(loading:Bool) {
+        updateUILoadingState(loading)
+        udacityLogo.hidden = !loading
+        loginFormView.hidden = loading
     }
 
     @IBAction func login(sender: AnyObject) {

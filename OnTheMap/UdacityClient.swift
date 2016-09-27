@@ -135,8 +135,13 @@ class UdacityClient:HTTPClient {
                 return
             }
             
+            guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
+                completionHandler(success: false, errorString: "Something went wrong. Check that you have Internet connection and try again.")
+                return
+            }
+            
             guard let data = data else {
-                completionHandler(success: false, errorString: "Log out failed")
+                completionHandler(success: false, errorString: "Something went wrong. Check that you have Internet connection and try again.")
                 return
             }
             
@@ -147,7 +152,11 @@ class UdacityClient:HTTPClient {
                     completionHandler(success: false, errorString: error?.localizedDescription)
                     return
                 }
-                guard (result["session"] != nil) else {
+                guard let result = result else {
+                    completionHandler(success: false, errorString: "No session found")
+                    return
+                }
+                guard let session = result["session"] else {
                     completionHandler(success: false, errorString: "No session found")
                     return
                 }

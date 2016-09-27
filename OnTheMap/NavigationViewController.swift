@@ -12,23 +12,48 @@ class NavigationViewController: UINavigationController {
     
     let parseClient = ParseClient.sharedInstance()
     let udacityClient = UdacityClient.sharedInstance()
-    
+    let alert = Alert()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         let pinIconImage = UIImage(named: "pin")
 
-                let leftItem = UINavigationItem()
-        leftItem.leftBarButtonItem = UIBarButtonItem(image: pinIconImage, style: UIBarButtonItemStyle.Done, target: self, action: #selector(NavigationViewController.showSendInfoViewController))
-        leftItem.title = "On The Map"
-        leftItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem:
+        let navigation = UINavigationItem()
+        navigation.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: UIBarButtonItemStyle.Done, target: self, action: #selector(NavigationViewController.logout))
+        navigation.title = "On The Map"
+        let pinButton = UIBarButtonItem(image: pinIconImage, style: UIBarButtonItemStyle.Done, target: self, action: #selector(NavigationViewController.showSendInfoViewController))
+        let reloadButton = UIBarButtonItem(barButtonSystemItem:
             .Redo, target: self, action: #selector(NavigationViewController.sayHi))
-        self.navigationBar.items =  [leftItem]
+        navigation.setRightBarButtonItems([pinButton, reloadButton], animated: true)
+        self.navigationBar.items =  [navigation]
+        
     }
     
     func sayHi () {
         print("Hi")
+        print(self.topViewController)
+    }
+    
+    func logout() {
+        let loginVC = self.storyboard?.instantiateViewControllerWithIdentifier("loginVC") as? LoginViewController
+        loginVC?.loginOutLoading = true
+        self.presentViewController(loginVC!, animated: true) {
+            self.udacityClient.logout { (success, errorString) in
+                if success {
+                    performUIUpdatesOnMain({
+                        loginVC?.loginOutLoading = false
+                        loginVC?.loginoutLoadingState(false)
+                    })
+                } else {
+                    performUIUpdatesOnMain({
+                        loginVC!.dismissViewControllerAnimated(true, completion: nil)
+                        self.alert.show(self, title: "Logout Failed", message: errorString!, actionText: "Dismiss", additionalAction: nil)
+                    })
+                }
+            }
+        }
+        
     }
     
     func showSendInfoViewController(){
