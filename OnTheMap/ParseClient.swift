@@ -95,6 +95,7 @@ class ParseClient:HTTPClient {
             self.convertDataWithCompletionHandler(data, completionHandlerForConvertData: { (result, error) in
                 guard(error == nil) else {
                     print("Error parsing data: \(error)")
+                    sendError(error!.localizedDescription)
                     return
                 }
                 

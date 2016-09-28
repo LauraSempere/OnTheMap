@@ -17,6 +17,8 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     @IBOutlet weak var activityIndicatorView: UIView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
+    let alert = Alert()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         activityIndicatorView.hidden = true
@@ -25,13 +27,14 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     override func viewWillAppear(animated: Bool) {
         parseClient.getStudentsInformation { (success, errorString) in
             if success {
-                print("Get locations succedeeded!")
                 performUIUpdatesOnMain{
                     self.setLocationPins()
                 }
                 
             } else {
-                print("Error getting locations: \(errorString)")
+                performUIUpdatesOnMain({ 
+                    self.alert.show(self, title: "Error", message: errorString!, actionText: "Dismiss", additionalAction: nil)
+                })
             }
         }
     }

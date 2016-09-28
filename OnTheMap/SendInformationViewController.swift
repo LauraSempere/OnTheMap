@@ -106,10 +106,7 @@ class SendInformationViewController: UIViewController, UITextFieldDelegate, MKMa
                     self.udacityClient.currentStudent.longitude = location.coordinate.longitude
                     self.udacityClient.currentStudent.mapString = self.locationTextField.text!
                     
-                    print("Current Student:: \(self.udacityClient.currentStudent)")
-                
                 } else {
-                    print("No location found")
                     self.alert.show(self, title: "No location found", message: "Could not find your location. Please try again", actionText: "Dismiss", additionalAction:   nil)
                     self.toggleActivityIndicator(false)
                 }
@@ -123,13 +120,11 @@ class SendInformationViewController: UIViewController, UITextFieldDelegate, MKMa
     private func sendUserInformation(userInfo:[String:AnyObject]){
         parseClient.sendStudentInfo(userInfo, completionHandlerForSendingInfo: { (success, objectId,errorString) in
             if success {
-                print("Post Student Info Succeded")
                 self.udacityClient.currentStudent.objectId = objectId!
                 
                 // Call Parse API again to get the student's data updated
                 self.parseClient.getStudentsInformation(completionHandlerForStudentsLocation: { (success, errorString) in
                     if success {
-                        print("Students locations updated")
                         self.toggleActivityIndicator(false)
                         self.dismissViewControllerAnimated(true, completion: nil)
                         
@@ -137,8 +132,7 @@ class SendInformationViewController: UIViewController, UITextFieldDelegate, MKMa
                         self.toggleActivityIndicator(false)
                         self.alert.show(self, title: "Error updating students' locations", message: errorString!, actionText: "Dismiss", additionalAction: nil)
                     }
-                    
-                    
+
                 })
                 
             } else {
@@ -172,10 +166,8 @@ class SendInformationViewController: UIViewController, UITextFieldDelegate, MKMa
         let userInfo:[String: AnyObject] = udacityClient.currentStudent.studentDictionary()
         
         if udacityClient.currentStudent.objectId.isEmpty {
-            print("Send user for the first time")
             sendUserInformation(userInfo)
         } else {
-            print("Update user")
             updateUserInformation(userInfo)
         }
         
