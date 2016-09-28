@@ -38,6 +38,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         
         textFieldInit(usernameTextField, placeholder:"Username")
         textFieldInit(passwordTextField, placeholder:"Password")
+        loginButton.layer.cornerRadius = 8
 
     }
     
@@ -144,7 +145,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     }
     
     func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
-        textField.text = ""
         textField.layer.borderWidth = 0
         textField.textColor = colors.darkOrange
         if textField == passwordTextField {

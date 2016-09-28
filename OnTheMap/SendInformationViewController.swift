@@ -9,7 +9,7 @@
 import UIKit
 import MapKit
 
-class SendInformationViewController: UIViewController, MKMapViewDelegate, UITextFieldDelegate {
+class SendInformationViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegate {
     
     @IBOutlet weak var submitLocationView:UIStackView!
     @IBOutlet weak var submitMediaURLView:UIStackView!
@@ -23,11 +23,13 @@ class SendInformationViewController: UIViewController, MKMapViewDelegate, UIText
     
     @IBOutlet weak var activityIndicatorView: UIView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var cancelButton: UIButton!
     
     let alert = Alert()
     let parseClient = ParseClient.sharedInstance()
     let udacityClient = UdacityClient.sharedInstance()
     var showActivityIndicatior:Bool = false
+    var colors = Colors()
     
     override func viewWillAppear(animated: Bool) {
         if showActivityIndicatior {
@@ -37,18 +39,30 @@ class SendInformationViewController: UIViewController, MKMapViewDelegate, UIText
         }
     }
     
+    func roundedWhiteButton(button: UIButton){
+        button.layer.cornerRadius = 8
+        button.tintColor = colors.blue
+        button.backgroundColor = colors.beige
+        button.layer.borderColor = colors.lightgrey.CGColor
+        button.layer.borderWidth = 1
+    }
+    
+    func initUI(){
+        locationTextField.backgroundColor = colors.blue
+        mediaURLTextField.backgroundColor = colors.blue
+        roundedWhiteButton(parseLocationStringButton)
+        roundedWhiteButton(submitLocationButton)
+        roundedWhiteButton(cancelButton)
+        
+        submitLocationView.hidden = false
+        submitMediaURLView.hidden = true
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         locationTextField.delegate = self
         mediaURLTextField.delegate = self
-        locationTextField.clearsOnBeginEditing = true
-        mediaURLTextField.clearsOnBeginEditing = true
-        
-        submitLocationView.hidden = false
-        submitMediaURLView.hidden = true
-
-        locationTextField.backgroundColor = UIColor.blueColor()
-        mediaURLTextField.backgroundColor = UIColor.blueColor()
+        initUI()
     }
 
     @IBAction func cancel(sender: AnyObject) {
@@ -165,16 +179,14 @@ class SendInformationViewController: UIViewController, MKMapViewDelegate, UIText
             updateUserInformation(userInfo)
         }
         
-        // MARK: TextField Delegate
-        
-        func textFieldShouldReturn(textField: UITextField) -> Bool {
-            if textField.isFirstResponder() {
-                textField.resignFirstResponder()
-            }
-            return true
-        }
-        
-        
     }
+    
+    // MARK: TextField Delegate
+    
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+    
 
 }

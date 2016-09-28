@@ -21,4 +21,5 @@ struct Colors {
     var beige:UIColor = rgbaToUIColor(255, green: 255, blue: 221, alpha: 1)
     var white:UIColor = rgbaToUIColor(255, green: 255, blue: 245, alpha: 1)
     var semitransparent:UIColor = rgbaToUIColor(255, green: 255, blue: 255, alpha: 0.4)
+    var lightgrey:UIColor = rgbaToUIColor(220, green: 220, blue: 220, alpha: 1)
 }

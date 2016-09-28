@@ -28,7 +28,7 @@ class ParseClient:HTTPClient {
     }
     
     private func getInfoFromParse(completionHandler: (success: Bool, studentsInfo: [StudentInformation]?, errorString: String?) -> Void){
-        taskForGETMethod(Methods.StudentLocation,url: nil, params: ["limit": 100]) { (result, error) in
+        taskForGETMethod(Methods.StudentLocation,url: nil, params: ["limit": 100, "order": "-updatedAt"]) { (result, error) in
             if let error = error {
                 completionHandler(success: false, studentsInfo: nil, errorString: error.localizedDescription)
             }else {
