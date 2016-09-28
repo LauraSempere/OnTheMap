@@ -111,8 +111,13 @@ class NavigationViewController: UINavigationController {
                     })
                     
                 } else {
-                    performUIUpdatesOnMain({ 
-                      sendInfoVC?.toggleActivityIndicator(false)
+                    performUIUpdatesOnMain({
+                        sendInfoVC?.toggleActivityIndicator(false)
+                        let action = UIAlertAction(title: "Dismiss", style: .Default, handler: { (UIAlertAction) in
+                            self.dismissViewControllerAnimated(true, completion: nil)
+                        })
+                        self.alert.show(sendInfoVC!, title: "Error", message: errorString!, withCustomActions: [action])
+                       
                     })
                 }
             }

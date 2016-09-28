@@ -83,7 +83,7 @@ class ParseClient:HTTPClient {
             }
             
             guard (error == nil) else {
-                sendError("There was an error in the request: \(error)")
+                sendError("Network connection failure")
                 return
             }
             
@@ -119,7 +119,8 @@ class ParseClient:HTTPClient {
         
         taskForGETMethod(nil, url: url, params: nil) { (result, error) in
             if let err = error {
-                print("Error: \(error)")
+                handler(success: false, errorString: err.localizedDescription)
+                print("Error:\(error)")
             } else {
                 guard let results = result["results"] as? [AnyObject] else {
                     handler(success: false, errorString: "No User found in the DB")
@@ -165,7 +166,7 @@ class ParseClient:HTTPClient {
             
             /* GUARD: Was there an error? */
             guard (error == nil) else {
-                sendError("There was an error with your request: \(error)")
+                sendError("Network connection failure")
                 return
             }
             
