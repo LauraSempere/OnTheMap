@@ -47,17 +47,17 @@
                                             <constraint firstAttribute="width" constant="280" id="DDS-S3-ou6"/>
                                             <constraint firstAttribute="height" constant="50" id="EHu-ni-ikC"/>
                                         </constraints>
-                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="15"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
-                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" verticalHuggingPriority="230" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="8AQ-ct-R02">
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleAspectFit" verticalHuggingPriority="230" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="8AQ-ct-R02">
                                         <rect key="frame" x="0.0" y="201" width="280" height="50"/>
                                         <color key="backgroundColor" red="0.96023602310852851" green="0.99648206847905707" blue="1" alpha="0.75319362331081086" colorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="50" id="FcG-AA-qeo"/>
                                             <constraint firstAttribute="width" constant="280" id="doL-tI-Luw"/>
                                         </constraints>
-                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="15"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tu0-rm-l46">

@@ -10,6 +10,8 @@ import UIKit
 
 class LoginViewController: UIViewController, UITextFieldDelegate {
 
+    let colors = Colors()
+    
     @IBOutlet weak var loginFormView: UIStackView!
     @IBOutlet weak var udacityLogo: UIImageView!
     @IBOutlet weak var loginLabel: UILabel!
@@ -33,7 +35,9 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         
         usernameTextField.delegate = self
         passwordTextField.delegate = self
-        passwordTextField.secureTextEntry = true
+        
+        textFieldInit(usernameTextField, placeholder:"Username")
+        textFieldInit(passwordTextField, placeholder:"Password")
 
     }
     
@@ -45,7 +49,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
-    func updateUILoadingState(loading:Bool){
+    func toggleLoadingState(loading:Bool){
         if loading {
             activityIndicatorView.hidden = false
             activityIndicator.startAnimating()
@@ -56,36 +60,99 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         
     }
     
+    func textFieldInit(textField: UITextField, placeholder: String) {
+        var padding = UIView(frame: CGRectMake(0, 0, 15, 15))
+        textField.leftView = padding
+        textField.leftViewMode = UITextFieldViewMode.Always
+        textField.backgroundColor = colors.semitransparent
+        textField.layer.cornerRadius = 8
+        textField.placeholder = placeholder
+        textField.textColor = colors.darkOrange
+    }
+    
+    func setTextFieldToInvalid(textfield:UITextField, text: String){
+        textfield.layer.borderWidth = 2
+        textfield.layer.borderColor = colors.red.CGColor
+        textfield.textColor = colors.red
+        textfield.text = text
+    }
+    
+    func isValidEmail(testStr:String) -> Bool {
+        let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
+        let emailTest = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
+        return emailTest.evaluateWithObject(testStr)
+    }
+    
+    func validateTextFields() -> Bool {
+        var validEmail:Bool = false
+        var validPassword:Bool = false
+        
+        if isValidEmail(usernameTextField.text!) {
+            validEmail = true
+        } else {
+            validEmail = false
+            setTextFieldToInvalid(usernameTextField, text: "Username must be a valid email")
+        }
+        
+        if !(passwordTextField.text?.isEmpty)! {
+            validPassword = true
+        } else {
+            validPassword = false
+            setTextFieldToInvalid(passwordTextField, text: "Password is required")
+            passwordTextField.secureTextEntry = false
+        }
+        
+        return (validEmail && validPassword)
+    }
+    
     func loginoutLoadingState(loading:Bool) {
-        updateUILoadingState(loading)
+        toggleLoadingState(loading)
         udacityLogo.hidden = !loading
         loginFormView.hidden = loading
     }
+    
+    
 
     @IBAction func login(sender: AnyObject) {
-        updateUILoadingState(true)
-        UdacityClient.sharedInstance().loginWithCredentitals(usernameTextField.text!, password: passwordTextField.text!){(success: Bool, errorString:String?) in
-            if success {
-                print("Login in successfully!")
-                performUIUpdatesOnMain{
-                    self.updateUILoadingState(false)
-                    let tabBarVC = self.storyboard?.instantiateViewControllerWithIdentifier("TabBarController") as! UITabBarController
-                    self.presentViewController(tabBarVC, animated: true, completion: nil)
-                }
-            } else {
-                print("Login Failed")
-                performUIUpdatesOnMain{
-                    self.updateUILoadingState(false)
-                    self.displayError(errorString)
-                }
-            }
+        if validateTextFields() {
             
+        
+            toggleLoadingState(true)
+            UdacityClient.sharedInstance().loginWithCredentitals(usernameTextField.text!, password: passwordTextField.text!){(success: Bool, errorString:String?) in
+                if success {
+                    print("Login in successfully!")
+                    performUIUpdatesOnMain{
+                        self.toggleLoadingState(false)
+                        let tabBarVC = self.storyboard?.instantiateViewControllerWithIdentifier("TabBarController") as! UITabBarController
+                        self.presentViewController(tabBarVC, animated: true, completion: nil)
+                    }
+                } else {
+                    print("Login Failed")
+                    performUIUpdatesOnMain{
+                        self.toggleLoadingState(false)
+                        self.displayError(errorString)
+                    }
+                }
+                
+            }
+        
         }
     }
     
     @IBAction func signup(sender: AnyObject) {
         app.openURL(NSURL(string: "https://auth.udacity.com/sign-up")!)
     }
+    
+    func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
+        textField.text = ""
+        textField.layer.borderWidth = 0
+        textField.textColor = colors.darkOrange
+        if textField == passwordTextField {
+            textField.secureTextEntry = true
+        }
+        return true
+    }
+    
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         if textField.isFirstResponder() {

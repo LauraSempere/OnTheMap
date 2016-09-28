@@ -11,7 +11,6 @@ import Foundation
 class UdacityClient:HTTPClient {
     
     let session = NSURLSession.sharedSession()
-   // var accountKey:String!
     var currentStudent = StudentInformation()
     
     private func udacityURLFromParams(params:[String:AnyObject]? = nil, method:String? = nil) -> NSURL {
@@ -39,10 +38,6 @@ class UdacityClient:HTTPClient {
             if success {
                 hander(success: true, errorString: nil)
                 self.currentStudent = StudentInformation(info: userData!)
-                print("Current Student ---> \(self.currentStudent)")
-                //self.currentStudent.uniqueKey = userData["uniqueKey"]
-                //self.currentStudent.uniqueKey = accountKey!
-               // self.accountKey = accountKey
             }else{
                 hander(success: false, errorString: errorString)
             }
@@ -53,7 +48,7 @@ class UdacityClient:HTTPClient {
         
         taskForPOSTMethod(Methods.Auth,params: [:], jsonBody: jsonData){(result, error) in
             if let error = error {
-                print("Error authenticating user: \(error)")
+                print("Error authenticating user: \(error.userInfo["NSLocalizedDescription"]!)")
                 completionHandler(success: false, userData: nil, errorString: error.localizedDescription)
             }else {
                 if let account = result["account"] {
@@ -166,7 +161,7 @@ class UdacityClient:HTTPClient {
             
             /* GUARD: Was there an error? */
             guard (error == nil) else {
-                sendError("There was an error with your request: \(error)")
+                sendError("Network connection failure")
                 return
             }
             
