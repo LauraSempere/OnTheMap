@@ -17,6 +17,7 @@
 		DD896AF91D92BCAE009C482D /* ParseConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD896AF81D92BCAE009C482D /* ParseConstants.swift */; };
 		DD896AFB1D92C432009C482D /* StudentInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD896AFA1D92C432009C482D /* StudentInformation.swift */; };
 		DDA339B51D9BF0AF00966571 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDA339B41D9BF0AF00966571 /* Colors.swift */; };
+		DDB9AF511D9CDB85006CBABA /* Students.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB9AF501D9CDB85006CBABA /* Students.swift */; };
 		DDD870EE1D97B92D00E798EB /* HTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDD870ED1D97B92D00E798EB /* HTTPClient.swift */; };
 		DDF420871D9AB6E1002C3545 /* studentsLocationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF420861D9AB6E1002C3545 /* studentsLocationCell.swift */; };
 		DDFF237C1D9161FC0082D02D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDFF237B1D9161FC0082D02D /* AppDelegate.swift */; };
@@ -40,6 +41,7 @@
 		DD896AF81D92BCAE009C482D /* ParseConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseConstants.swift; sourceTree = "<group>"; };
 		DD896AFA1D92C432009C482D /* StudentInformation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StudentInformation.swift; sourceTree = "<group>"; };
 		DDA339B41D9BF0AF00966571 /* Colors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
+		DDB9AF501D9CDB85006CBABA /* Students.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Students.swift; sourceTree = "<group>"; };
 		DDD870ED1D97B92D00E798EB /* HTTPClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPClient.swift; sourceTree = "<group>"; };
 		DDF420861D9AB6E1002C3545 /* studentsLocationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = studentsLocationCell.swift; sourceTree = "<group>"; };
 		DDFF23781D9161FC0082D02D /* OnTheMap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OnTheMap.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -135,6 +137,7 @@
 			children = (
 				DDFF23901D9173C60082D02D /* Clients */,
 				DD896AFA1D92C432009C482D /* StudentInformation.swift */,
+				DDB9AF501D9CDB85006CBABA /* Students.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -234,6 +237,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DDB9AF511D9CDB85006CBABA /* Students.swift in Sources */,
 				DD0B08651D966E81008B6E50 /* LocationsTableViewController.swift in Sources */,
 				DDFF23971D917C6D0082D02D /* GCD.swift in Sources */,
 				DD896AF21D92B25B009C482D /* MapViewController.swift in Sources */,

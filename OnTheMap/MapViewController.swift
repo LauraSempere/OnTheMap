@@ -11,6 +11,7 @@ import MapKit
 
 class MapViewController: UIViewController, MKMapViewDelegate {
     let parseClient = ParseClient.sharedInstance()
+    let students = Students.sharedInstance()
 
     @IBOutlet weak var mapView: MKMapView!
     
@@ -60,7 +61,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         
         
     
-        let locations = parseClient.studentsInformation
+        let locations = students.studentsInformation
         var annotations = [MKPointAnnotation]()
         
         for location in locations {

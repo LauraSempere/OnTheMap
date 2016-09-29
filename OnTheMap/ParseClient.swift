@@ -11,14 +11,13 @@ import Foundation
 class ParseClient:HTTPClient {
     
     let session = NSURLSession.sharedSession()
-    var studentsInformation = [StudentInformation()]
     let udacityClient = UdacityClient.sharedInstance()
     
     func getStudentsInformation(completionHandlerForStudentsLocation handler:(success:Bool, errorString:String?) -> Void) {
         
         getInfoFromParse() {(success, studentsInfo, errorString) in
             if success {
-                self.studentsInformation = studentsInfo!
+                Students.sharedInstance().studentsInformation = studentsInfo!
                     handler(success: true, errorString: nil)
             } else {
                 handler(success: false, errorString: errorString)
@@ -36,7 +35,7 @@ class ParseClient:HTTPClient {
                     if let error = error {
                         completionHandler(success: false, studentsInfo: nil, errorString: error)
                     }else {
-                        self.studentsInformation = students!
+                        Students.sharedInstance().studentsInformation = students!
                         completionHandler(success: true, studentsInfo: students, errorString: nil)
                     }
                 })

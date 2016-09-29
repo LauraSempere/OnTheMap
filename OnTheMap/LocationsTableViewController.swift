@@ -13,6 +13,7 @@ class LocationsTableViewController: UITableViewController {
     let parseClient = ParseClient.sharedInstance()
     let app = UIApplication.sharedApplication()
     var loading = false
+    let students = Students.sharedInstance()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,7 +30,7 @@ class LocationsTableViewController: UITableViewController {
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return parseClient.studentsInformation.count
+        return students.studentsInformation.count
     }
 
     
@@ -37,7 +38,7 @@ class LocationsTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCellWithIdentifier("studentsCell", forIndexPath: indexPath) as! studentsLocationCell
        
         cell.icon.image = UIImage(named: "pin")
-        cell.name.text = parseClient.studentsInformation[indexPath.row].firstName + " " + parseClient.studentsInformation[indexPath.row].lastName
+        cell.name.text = students.studentsInformation[indexPath.row].firstName + " " + students.studentsInformation[indexPath.row].lastName
         if loading {
             cell.activityIndicator.hidden = false
             cell.name.hidden = true
@@ -53,7 +54,7 @@ class LocationsTableViewController: UITableViewController {
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let studentURL:String!
-        studentURL = parseClient.studentsInformation[indexPath.row].mediaURL
+        studentURL = students.studentsInformation[indexPath.row].mediaURL
         let url:NSURL! = NSURL(string: studentURL)
         if let url = url {
             app.openURL(url)
